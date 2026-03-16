@@ -9,7 +9,9 @@ public class UserMapper {
         UserDto userDto = new UserDto();
 
         userDto.setId(savedUser.getId());
+        userDto.setFullname(savedUser.getFullname());
         userDto.setEmail(savedUser.getEmail());
+        userDto.setPassword(savedUser.getPassword());
         userDto.setRole(savedUser.getRole());
         userDto.setCreateDateAt(savedUser.getCreateDateAt());
         userDto.setLastlogin(savedUser.getLastlogin());
