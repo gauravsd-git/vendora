@@ -19,5 +19,5 @@ public class UserDto {
     private String password;
     private LocalDateTime createDateAt;
     private LocalDateTime updateDateAt;
-    private LocalDateTime lastlogin;
+    private LocalDateTime lastLogin;
 }

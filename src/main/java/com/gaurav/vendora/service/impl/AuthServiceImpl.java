@@ -4,7 +4,7 @@ import com.gaurav.vendora.configurtion.JwtProvider;
 import com.gaurav.vendora.domain.UserRole;
 import com.gaurav.vendora.exceptions.UserException;
 import com.gaurav.vendora.mapper.UserMapper;
-import com.gaurav.vendora.modal.User;
+import com.gaurav.vendora.model.User;
 import com.gaurav.vendora.payload.dto.UserDto;
 import com.gaurav.vendora.payload.response.AuthResponse;
 import com.gaurav.vendora.repository.UserRepository;
@@ -49,7 +49,7 @@ public class AuthServiceImpl implements AuthService {
         newUser.setRole(userDto.getRole());
         newUser.setFullname(userDto.getFullname());
         newUser.setPhone(userDto.getPhone());
-        newUser.setLastlogin(LocalDateTime.now());
+        newUser.setLastLogin(LocalDateTime.now());
         newUser.setCreateDateAt(LocalDateTime.now());
 
         User savedUser = userRepository.save(newUser);
@@ -90,7 +90,7 @@ public class AuthServiceImpl implements AuthService {
         String jwt = jwtProvider.generateJwtToken(authentication);
 
         User user = userRepository.findByEmail(email);
-        user.setLastlogin(LocalDateTime.now());
+        user.setLastLogin(LocalDateTime.now());
         userRepository.save(user);
 
         AuthResponse authResponse = new AuthResponse();

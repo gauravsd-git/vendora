@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Configuration
-public class securityConfig {
+public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -28,9 +28,9 @@ public class securityConfig {
                 .sessionManagement(management ->
                         management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(Authorize ->
-                        Authorize.requestMatchers("/api/**").authenticated()
-                                .requestMatchers("/api/super-admin/**")
-                                .hasRole("ADMIN")
+                        Authorize
+                                .requestMatchers("/api/super-admin/**").hasRole("ADMIN")
+                                .requestMatchers("/api/**").authenticated()
                                 .anyRequest().permitAll()
                 ).addFilterBefore(new JwtValidator(),
                         BasicAuthenticationFilter.class)

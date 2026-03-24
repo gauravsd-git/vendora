@@ -1,6 +1,6 @@
 package com.gaurav.vendora.mapper;
 
-import com.gaurav.vendora.modal.User;
+import com.gaurav.vendora.model.User;
 import com.gaurav.vendora.payload.dto.UserDto;
 
 public class UserMapper {
@@ -11,10 +11,10 @@ public class UserMapper {
         userDto.setId(savedUser.getId());
         userDto.setFullname(savedUser.getFullname());
         userDto.setEmail(savedUser.getEmail());
-        userDto.setPassword(savedUser.getPassword());
+        //userDto.setPassword(savedUser.getPassword());
         userDto.setRole(savedUser.getRole());
         userDto.setCreateDateAt(savedUser.getCreateDateAt());
-        userDto.setLastlogin(savedUser.getLastlogin());
+        userDto.setLastLogin(savedUser.getLastLogin());
         userDto.setUpdateDateAt(savedUser.getUpdateDateAt());
         userDto.setPhone(savedUser.getPhone());
 

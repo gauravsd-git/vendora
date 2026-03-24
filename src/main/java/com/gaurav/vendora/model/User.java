@@ -1,5 +1,7 @@
-package com.gaurav.vendora.modal;
+package com.gaurav.vendora.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gaurav.vendora.domain.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -32,10 +34,11 @@ public class User {
     @Column(nullable = false)
     private UserRole role;
 
-    @Column(nullable = false)
+    @JsonProperty(access =
+    JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     private LocalDateTime createDateAt;
     private LocalDateTime updateDateAt;
-    private LocalDateTime lastlogin;
+    private LocalDateTime lastLogin;
 }
