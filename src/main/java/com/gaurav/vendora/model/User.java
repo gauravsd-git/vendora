@@ -29,6 +29,10 @@ public class User {
     @Email(message = "Email should be vailid")
     private String email;
 
+    @ManyToOne
+    @JoinColumn(name = "store_id")
+    private Store store;
+
     private String phone;
 
     @Column(nullable = false)
