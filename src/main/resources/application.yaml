@@ -1,12 +1,8 @@
 spring:
-  application:
-    name: vendora
-
   datasource:
     url: jdbc:mysql://localhost:3306/vendora
     username: root
-    password: Root@1234
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    password: root123
 
   jpa:
     hibernate:
