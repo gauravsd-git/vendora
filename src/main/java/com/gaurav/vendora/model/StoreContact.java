@@ -1,19 +1,19 @@
 package com.gaurav.vendora.model;
 
-import jakarta.persistence.Embeddable;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
-@Embeddable
-@Builder
-@NoArgsConstructor
+@Entity
+@Getter
+@Setter
 @AllArgsConstructor
-
+@NoArgsConstructor
+@Builder
 public class StoreContact {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String address;
     private String phone;
 

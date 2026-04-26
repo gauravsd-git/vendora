@@ -16,32 +16,37 @@ import java.time.LocalDateTime;
 public class Store {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
     private String brand;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "store_admin_id", nullable = false)
     private User storeAdmin;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
     private String description;
     private String storeType;
+
+    @Enumerated(EnumType.STRING)
     private StoreStatus status;
 
-    @Embedded
-    private StoreContact contact = new StoreContact();
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "contact_id")
+    private StoreContact contact;
 
     @PostPersist
     protected void onCreate(){
-        createdAt = LocalDateTime.now();
-        status = StoreStatus.PENDING;
+        this.createdAt = LocalDateTime.now();
+        this.status = StoreStatus.PENDING;
     }
 
     @PreUpdate
     protected void onUpdate(){
-        updatedAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 }

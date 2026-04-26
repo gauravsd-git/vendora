@@ -88,9 +88,4 @@ public class StoreController {
         apiResponse.setMessage("store deleted successfully");
         return ResponseEntity.ok(apiResponse);
     }
-
-
-
-
-
 }

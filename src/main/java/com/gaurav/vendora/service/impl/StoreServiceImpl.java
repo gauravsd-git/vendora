@@ -27,6 +27,10 @@ public class StoreServiceImpl implements StoreService {
     public StoreDto createStore(StoreDto storeDto, User user) {
 
         Store store = StoreMapper.toEntity(storeDto, user);
+
+        store.setStoreAdmin(user);                 // ensure admin
+        store.setStatus(StoreStatus.PENDING);
+
         Store savedStore = storeRepository.save(store);
 
         return StoreMapper.toDto(savedStore);
