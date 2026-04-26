@@ -1,6 +1,5 @@
 package com.gaurav.vendora.controller;
 
-import com.gaurav.vendora.exceptions.UserException;
 import com.gaurav.vendora.payload.dto.ProductDto;
 import com.gaurav.vendora.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -16,37 +15,39 @@ public class ProductController {
 
     private final ProductService productService;
 
-    // Create
     @PostMapping
-    public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto dto) throws UserException {
-        return ResponseEntity.ok(productService.createProduct(dto));
+    public ResponseEntity<ProductDto> createProduct(
+            @RequestBody ProductDto dto,
+            @RequestHeader("Authorization") String jwt
+    ) throws Exception {
+
+        return ResponseEntity.ok(productService.createProduct(dto, jwt));
     }
 
-    // Get all
     @GetMapping
-    public ResponseEntity<List<ProductDto>> getAll() {
-        return ResponseEntity.ok(productService.getAllProducts());
+    public ResponseEntity<List<ProductDto>> getAllProducts(
+            @RequestHeader("Authorization") String jwt
+    ) throws Exception {
+
+        return ResponseEntity.ok(productService.getAllProducts(jwt));
     }
 
-    // Get by store
-    @GetMapping("/store")
-    public ResponseEntity<List<ProductDto>> getByStore() throws UserException {
-        return ResponseEntity.ok(productService.getProductsByStore());
-    }
-
-    // Update
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDto> update(
+    public ResponseEntity<ProductDto> updateProduct(
             @PathVariable Long id,
-            @RequestBody ProductDto dto
-    ) {
-        return ResponseEntity.ok(productService.updateProduct(id, dto));
+            @RequestBody ProductDto dto,
+            @RequestHeader("Authorization") String jwt
+    ) throws Exception {
+
+        return ResponseEntity.ok(productService.updateProduct(id, dto, jwt));
     }
 
-    // Delete
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable Long id) {
+    public ResponseEntity<String> deleteProduct(
+            @PathVariable Long id
+    ) throws Exception {
+
         productService.deleteProduct(id);
-        return ResponseEntity.ok("Product deleted");
+        return ResponseEntity.ok("Product deleted successfully");
     }
 }

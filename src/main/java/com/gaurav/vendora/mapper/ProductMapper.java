@@ -2,23 +2,29 @@ package com.gaurav.vendora.mapper;
 
 import com.gaurav.vendora.model.Product;
 import com.gaurav.vendora.payload.dto.ProductDto;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ProductMapper {
 
-    public static ProductDto toDto(Product product) {
+    // DTO → Entity
+    public Product toEntity(ProductDto dto) {
+        return Product.builder()
+                .id(dto.getId())
+                .name(dto.getName())
+                .price(dto.getPrice())
+                .quantity(dto.getQuantity())
+                .build();
+    }
+
+    // Entity → DTO
+    public ProductDto toDto(Product product) {
         return ProductDto.builder()
                 .id(product.getId())
                 .name(product.getName())
                 .price(product.getPrice())
                 .quantity(product.getQuantity())
-                .build();
-    }
-
-    public static Product toEntity(ProductDto dto) {
-        return Product.builder()
-                .name(dto.getName())
-                .price(dto.getPrice())
-                .quantity(dto.getQuantity())
+                .storeId(product.getStore() != null ? product.getStore().getId() : null)
                 .build();
     }
 }

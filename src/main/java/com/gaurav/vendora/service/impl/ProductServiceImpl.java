@@ -1,14 +1,14 @@
 package com.gaurav.vendora.service.impl;
 
-import com.gaurav.vendora.exceptions.UserException;
+import com.gaurav.vendora.configurtion.JwtProvider;
 import com.gaurav.vendora.mapper.ProductMapper;
 import com.gaurav.vendora.model.Product;
 import com.gaurav.vendora.model.Store;
 import com.gaurav.vendora.model.User;
 import com.gaurav.vendora.payload.dto.ProductDto;
 import com.gaurav.vendora.repository.ProductRepository;
+import com.gaurav.vendora.repository.UserRepository;
 import com.gaurav.vendora.service.ProductService;
-import com.gaurav.vendora.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,49 +19,52 @@ import java.util.List;
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
-    private final UserService userService;
+    private final UserRepository userRepository;
+    private final JwtProvider jwtProvider;
+    private final ProductMapper productMapper;
 
     @Override
-    public ProductDto createProduct(ProductDto dto) throws UserException {
+    public ProductDto createProduct(ProductDto dto, String jwt) throws Exception {
 
-        User user = userService.getCurrentUser();
+        String email = jwtProvider.getEmailFromToken(jwt);
+        User user = userRepository.findByEmail(email);
 
         Store store = user.getStore();
+
         if (store == null) {
             throw new RuntimeException("User is not assigned to any store");
         }
 
-        Product product = ProductMapper.toEntity(dto);
+        Product product = productMapper.toEntity(dto);
 
+        // link store
         product.setStore(store);
 
         Product saved = productRepository.save(product);
 
-        return ProductMapper.toDto(saved);
+        return productMapper.toDto(saved);
     }
 
     @Override
-    public List<ProductDto> getAllProducts() {
-        return productRepository.findAll()
-                .stream()
-                .map(ProductMapper::toDto)
-                .toList();
-    }
+    public List<ProductDto> getAllProducts(String jwt) throws Exception {
 
-    @Override
-    public List<ProductDto> getProductsByStore() throws UserException {
-
-        User user = userService.getCurrentUser();
+        String email = jwtProvider.getEmailFromToken(jwt);
+        User user = userRepository.findByEmail(email);
         Store store = user.getStore();
 
-        return productRepository.findByStoreId(store.getId())
-                .stream()
-                .map(ProductMapper::toDto)
+        if (store == null) {
+            throw new RuntimeException("User is not assigned to any store");
+        }
+
+        List<Product> products = productRepository.findByStore(store);
+
+        return products.stream()
+                .map(productMapper::toDto)
                 .toList();
     }
 
     @Override
-    public ProductDto updateProduct(Long id, ProductDto dto) {
+    public ProductDto updateProduct(Long id, ProductDto dto, String jwt) throws Exception {
 
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
@@ -70,11 +73,17 @@ public class ProductServiceImpl implements ProductService {
         product.setPrice(dto.getPrice());
         product.setQuantity(dto.getQuantity());
 
-        return ProductMapper.toDto(productRepository.save(product));
+        Product updated = productRepository.save(product);
+
+        return productMapper.toDto(updated);
     }
 
     @Override
-    public void deleteProduct(Long id) {
-        productRepository.deleteById(id);
+    public void deleteProduct(Long id) throws Exception {
+
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        productRepository.delete(product);
     }
 }

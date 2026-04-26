@@ -34,7 +34,7 @@ public class JwtProvider {
     }
 
     //Method to get Email from JWT token
-    public String getEmaiFromToken(String jwt) {
+    public String getEmailFromToken(String jwt) {
         jwt = jwt.substring(7);
 
         Claims claims = Jwts.parser()

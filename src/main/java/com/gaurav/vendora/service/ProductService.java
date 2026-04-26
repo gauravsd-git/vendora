@@ -1,19 +1,16 @@
 package com.gaurav.vendora.service;
 
-import com.gaurav.vendora.exceptions.UserException;
 import com.gaurav.vendora.payload.dto.ProductDto;
 
 import java.util.List;
 
 public interface ProductService {
 
-    ProductDto createProduct(ProductDto dto) throws UserException;
+    ProductDto createProduct(ProductDto dto, String jwt) throws Exception;
 
-    List<ProductDto> getAllProducts();
+    List<ProductDto> getAllProducts(String jwt) throws Exception;
 
-    List<ProductDto> getProductsByStore() throws UserException;
+    ProductDto updateProduct(Long id, ProductDto dto, String jwt) throws Exception;
 
-    ProductDto updateProduct(Long id, ProductDto dto);
-
-    void deleteProduct(Long id);
+    void deleteProduct(Long id) throws Exception;
 }
