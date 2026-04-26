@@ -2,6 +2,7 @@ package com.gaurav.vendora.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gaurav.vendora.domain.OrderStatus;
+import com.gaurav.vendora.domain.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -36,6 +37,9 @@ public class Order {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus paymentStatus;
+
     @JsonIgnore
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items = new ArrayList<>();
@@ -49,6 +53,8 @@ public class Order {
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
         this.status = OrderStatus.PENDING;
+        this.paymentStatus = PaymentStatus.PENDING;
+
         if (this.totalAmount == null) {
             this.totalAmount = 0.0;
         }
