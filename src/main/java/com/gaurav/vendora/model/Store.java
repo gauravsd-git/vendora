@@ -22,7 +22,7 @@ public class Store {
     @Column(nullable = false)
     private String brand;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "store_admin_id", nullable = false)
     private User storeAdmin;
 
@@ -40,13 +40,13 @@ public class Store {
     private StoreContact contact;
 
     @PostPersist
-    protected void onCreate(){
+    protected void onCreate() {
         this.createdAt = LocalDateTime.now();
         this.status = StoreStatus.PENDING;
     }
 
     @PreUpdate
-    protected void onUpdate(){
+    protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
 }

@@ -1,6 +1,5 @@
 package com.gaurav.vendora.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gaurav.vendora.domain.UserRole;
 import jakarta.persistence.*;
@@ -26,20 +25,20 @@ public class User {
     private String fullname;
 
     @Column(nullable = false, unique = true)
-    @Email(message = "Email should be vailid")
+    @Email(message = "Email should be valid")
     private String email;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "store_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "store_id")
     private Store store;
 
     private String phone;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserRole role;
 
-    @JsonProperty(access =
-    JsonProperty.Access.WRITE_ONLY)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     private LocalDateTime createDateAt;

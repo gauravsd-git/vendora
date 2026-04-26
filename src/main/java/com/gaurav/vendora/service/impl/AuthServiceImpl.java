@@ -12,6 +12,7 @@ import com.gaurav.vendora.repository.StoreRepository;
 import com.gaurav.vendora.repository.UserRepository;
 import com.gaurav.vendora.service.AuthService;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,50 +29,43 @@ import java.time.LocalDateTime;
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
-    private final StoreRepository storeRepository; // ✅ ADDED
+    private final StoreRepository storeRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
     private final CustomUserImplementation customUserImplementation;
 
-    //SIGNUP
+    @Transactional
     @Override
     public AuthResponse signup(UserDto userDto) throws UserException {
 
-        User existingUser = userRepository.findByEmail(userDto.getEmail());
-
-        if (existingUser != null) {
+        if (userRepository.findByEmail(userDto.getEmail()) != null) {
             throw new UserException("Email already registered!");
         }
 
-        if (userDto.getRole() == UserRole.ROLE_ADMIN) {
-            throw new UserException("Admin cannot register here!");
-        }
-
-        User newUser = new User();
-        newUser.setEmail(userDto.getEmail());
-        newUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        newUser.setRole(userDto.getRole());
-        newUser.setFullname(userDto.getFullname());
-        newUser.setPhone(userDto.getPhone());
-        newUser.setLastLogin(LocalDateTime.now());
-        newUser.setCreateDateAt(LocalDateTime.now());
-
-        //MULTI-TENANT FIX (CORE LOGIC)
-        if (userDto.getRole() == UserRole.ROLE_STORE_ADMIN) {
-
-            Store store = new Store();
-            store.setBrand(userDto.getFullname() + "'s Store");
-
-            Store savedStore = storeRepository.save(store);
-
-            newUser.setStore(savedStore);
-        } else {
+        if (userDto.getRole() != UserRole.ROLE_STORE_ADMIN) {
             throw new UserException("Only Store Admin can register");
         }
 
-        User savedUser = userRepository.save(newUser);
+        User user = new User();
+        user.setEmail(userDto.getEmail());
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        user.setRole(userDto.getRole());
+        user.setFullname(userDto.getFullname());
+        user.setPhone(userDto.getPhone());
+        user.setCreateDateAt(LocalDateTime.now());
+        user.setLastLogin(LocalDateTime.now());
 
-        // Authentication setup
+        User savedUser = userRepository.save(user);
+
+        Store store = new Store();
+        store.setBrand(savedUser.getFullname() + "'s Store");
+        store.setStoreAdmin(savedUser);
+
+        Store savedStore = storeRepository.save(store);
+
+        savedUser.setStore(savedStore);
+        userRepository.save(savedUser);
+
         UserDetails userDetails =
                 customUserImplementation.loadUserByUsername(savedUser.getEmail());
 
@@ -94,7 +88,6 @@ public class AuthServiceImpl implements AuthService {
         return response;
     }
 
-    //LOGIN (SAFE)
     @Override
     public AuthResponse login(UserDto userDto) throws UserException {
 
@@ -109,7 +102,6 @@ public class AuthServiceImpl implements AuthService {
 
         User user = userRepository.findByEmail(email);
 
-        //SAFETY CHECK
         if (user.getStore() == null) {
             throw new UserException("User not assigned to any store");
         }
@@ -125,7 +117,6 @@ public class AuthServiceImpl implements AuthService {
         return response;
     }
 
-    // AUTHENTICATION
     private Authentication authenticate(String email, String password) throws UserException {
 
         UserDetails userDetails;
