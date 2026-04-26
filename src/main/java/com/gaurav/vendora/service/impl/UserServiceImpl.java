@@ -1,6 +1,6 @@
 package com.gaurav.vendora.service.impl;
 
-import com.gaurav.vendora.configurtion.JwtProvider;
+import com.gaurav.vendora.configuration.JwtProvider;
 import com.gaurav.vendora.exceptions.UserException;
 import com.gaurav.vendora.model.User;
 import com.gaurav.vendora.repository.UserRepository;

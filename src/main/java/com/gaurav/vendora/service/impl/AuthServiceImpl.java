@@ -1,12 +1,14 @@
 package com.gaurav.vendora.service.impl;
 
-import com.gaurav.vendora.configurtion.JwtProvider;
+import com.gaurav.vendora.configuration.JwtProvider;
 import com.gaurav.vendora.domain.UserRole;
 import com.gaurav.vendora.exceptions.UserException;
 import com.gaurav.vendora.mapper.UserMapper;
+import com.gaurav.vendora.model.Store;
 import com.gaurav.vendora.model.User;
 import com.gaurav.vendora.payload.dto.UserDto;
 import com.gaurav.vendora.payload.response.AuthResponse;
+import com.gaurav.vendora.repository.StoreRepository;
 import com.gaurav.vendora.repository.UserRepository;
 import com.gaurav.vendora.service.AuthService;
 
@@ -26,21 +28,23 @@ import java.time.LocalDateTime;
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
+    private final StoreRepository storeRepository; // ✅ ADDED
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
     private final CustomUserImplementation customUserImplementation;
 
+    //SIGNUP
     @Override
     public AuthResponse signup(UserDto userDto) throws UserException {
 
-        User user = userRepository.findByEmail(userDto.getEmail());
+        User existingUser = userRepository.findByEmail(userDto.getEmail());
 
-        if (user != null) {
-            throw new UserException("Email id already registered!");
+        if (existingUser != null) {
+            throw new UserException("Email already registered!");
         }
 
-        if (userDto.getRole().equals(UserRole.ROLE_ADMIN)) {
-            throw new UserException("Admin already exists!");
+        if (userDto.getRole() == UserRole.ROLE_ADMIN) {
+            throw new UserException("Admin cannot register here!");
         }
 
         User newUser = new User();
@@ -52,9 +56,22 @@ public class AuthServiceImpl implements AuthService {
         newUser.setLastLogin(LocalDateTime.now());
         newUser.setCreateDateAt(LocalDateTime.now());
 
+        //MULTI-TENANT FIX (CORE LOGIC)
+        if (userDto.getRole() == UserRole.ROLE_STORE_ADMIN) {
+
+            Store store = new Store();
+            store.setBrand(userDto.getFullname() + "'s Store");
+
+            Store savedStore = storeRepository.save(store);
+
+            newUser.setStore(savedStore);
+        } else {
+            throw new UserException("Only Store Admin can register");
+        }
+
         User savedUser = userRepository.save(newUser);
 
-        // Load UserDetails for authentication
+        // Authentication setup
         UserDetails userDetails =
                 customUserImplementation.loadUserByUsername(savedUser.getEmail());
 
@@ -69,14 +86,15 @@ public class AuthServiceImpl implements AuthService {
 
         String jwt = jwtProvider.generateJwtToken(authentication);
 
-        AuthResponse authResponse = new AuthResponse();
-        authResponse.setJwt(jwt);
-        authResponse.setMessage("Registered successfully...");
-        authResponse.setUser(UserMapper.toDTO(savedUser));
+        AuthResponse response = new AuthResponse();
+        response.setJwt(jwt);
+        response.setMessage("Registered successfully...");
+        response.setUser(UserMapper.toDTO(savedUser));
 
-        return authResponse;
+        return response;
     }
 
+    //LOGIN (SAFE)
     @Override
     public AuthResponse login(UserDto userDto) throws UserException {
 
@@ -90,17 +108,24 @@ public class AuthServiceImpl implements AuthService {
         String jwt = jwtProvider.generateJwtToken(authentication);
 
         User user = userRepository.findByEmail(email);
+
+        //SAFETY CHECK
+        if (user.getStore() == null) {
+            throw new UserException("User not assigned to any store");
+        }
+
         user.setLastLogin(LocalDateTime.now());
         userRepository.save(user);
 
-        AuthResponse authResponse = new AuthResponse();
-        authResponse.setJwt(jwt);
-        authResponse.setMessage("Login successfully...");
-        authResponse.setUser(UserMapper.toDTO(user));
+        AuthResponse response = new AuthResponse();
+        response.setJwt(jwt);
+        response.setMessage("Login successfully...");
+        response.setUser(UserMapper.toDTO(user));
 
-        return authResponse;
+        return response;
     }
 
+    // AUTHENTICATION
     private Authentication authenticate(String email, String password) throws UserException {
 
         UserDetails userDetails;
@@ -108,11 +133,11 @@ public class AuthServiceImpl implements AuthService {
         try {
             userDetails = customUserImplementation.loadUserByUsername(email);
         } catch (Exception e) {
-            throw new UserException(STR."Email id doesn't exist: \{email}");
+            throw new UserException("Email does not exist: " + email);
         }
 
         if (!passwordEncoder.matches(password, userDetails.getPassword())) {
-            throw new UserException("Password doesn't match!");
+            throw new UserException("Invalid password!");
         }
 
         return new UsernamePasswordAuthenticationToken(

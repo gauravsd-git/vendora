@@ -29,8 +29,8 @@ public class User {
     @Email(message = "Email should be vailid")
     private String email;
 
-    @ManyToOne
-    @JoinColumn(name = "store_id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "store_id", nullable = false)
     private Store store;
 
     private String phone;

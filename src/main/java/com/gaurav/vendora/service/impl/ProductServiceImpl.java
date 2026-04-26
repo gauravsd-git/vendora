@@ -1,6 +1,6 @@
 package com.gaurav.vendora.service.impl;
 
-import com.gaurav.vendora.configurtion.JwtProvider;
+import com.gaurav.vendora.configuration.JwtProvider;
 import com.gaurav.vendora.mapper.ProductMapper;
 import com.gaurav.vendora.model.Product;
 import com.gaurav.vendora.model.Store;

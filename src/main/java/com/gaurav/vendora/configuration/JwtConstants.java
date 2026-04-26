@@ -1,4 +1,4 @@
-package com.gaurav.vendora.configurtion;
+package com.gaurav.vendora.configuration;
 
 public class JwtConstants {
     public static final String JWT_SELECT ="dfebfebebjejnjsneffsc,sdfghjwrtyufghvbdfgrt,rtfgfgvbnbndfgfvhfguhfjhfvhggfghfjvjjkjn,erdxrffvhfvuhgjhgjhujhbhjhb";

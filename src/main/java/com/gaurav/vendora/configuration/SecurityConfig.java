@@ -1,4 +1,4 @@
-package com.gaurav.vendora.configurtion;
+package com.gaurav.vendora.configuration;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.jspecify.annotations.NonNull;

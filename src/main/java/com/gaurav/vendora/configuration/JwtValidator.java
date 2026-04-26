@@ -1,4 +1,4 @@
-package com.gaurav.vendora.configurtion;
+package com.gaurav.vendora.configuration;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
