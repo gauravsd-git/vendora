@@ -21,22 +21,25 @@ public class CustomUserImplementation implements UserDetailsService {
     private UserRepository userRepository;
 
     @Override
-    public @NonNull UserDetails loadUserByUsername(@NonNull String username) throws UsernameNotFoundException {
+    public @NonNull UserDetails loadUserByUsername(@NonNull String username)
+            throws UsernameNotFoundException {
 
         User user = userRepository.findByEmail(username);
+
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
         }
 
-        GrantedAuthority authority = new SimpleGrantedAuthority(
-                user.getRole().toString()
-        );
+        GrantedAuthority authority =
+                new SimpleGrantedAuthority("ROLE_" + user.getRole().name());
 
         Collection<GrantedAuthority> authorities =
                 Collections.singletonList(authority);
 
         return new org.springframework.security.core.userdetails.User(
-                user.getEmail(), user.getPassword(), authorities
+                user.getEmail(),
+                user.getPassword(),
+                authorities
         );
     }
 }

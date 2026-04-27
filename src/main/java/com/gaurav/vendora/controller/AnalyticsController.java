@@ -2,9 +2,8 @@ package com.gaurav.vendora.controller;
 
 import com.gaurav.vendora.service.AnalyticsService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +12,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/analytics")
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('ADMIN')")
 public class AnalyticsController {
 
     private final AnalyticsService analyticsService;

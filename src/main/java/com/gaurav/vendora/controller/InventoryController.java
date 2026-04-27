@@ -3,11 +3,13 @@ package com.gaurav.vendora.controller;
 import com.gaurav.vendora.exceptions.UserException;
 import com.gaurav.vendora.service.InventoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/inventory")
 @RequiredArgsConstructor
+@PreAuthorize("hasAnyRole('ADMIN','STORE_ADMIN','CASHIER')")
 public class InventoryController {
 
     private final InventoryService inventoryService;

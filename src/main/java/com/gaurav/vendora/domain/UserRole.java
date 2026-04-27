@@ -1,10 +1,7 @@
 package com.gaurav.vendora.domain;
 
 public enum UserRole {
-
-    ROLE_ADMIN,
-    ROLE_STORE_ADMIN,
-    ROLE_CASHIER,
-    ROLE_BRANCH_MANAGER,
-    ROLE_STORE_MANAGER
+    ADMIN,        // super admin
+    STORE_ADMIN,  // store owner
+    CASHIER       // employee
 }

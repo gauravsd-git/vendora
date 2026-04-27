@@ -6,6 +6,7 @@ import com.gaurav.vendora.payload.response.AuthResponse;
 import com.gaurav.vendora.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

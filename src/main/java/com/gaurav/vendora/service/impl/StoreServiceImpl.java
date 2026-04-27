@@ -58,7 +58,7 @@ public class StoreServiceImpl implements StoreService {
 
     // Get Store by Admin
     @Override
-    public StoreDto getStoreByAdmin() throws UserException {
+    public Store getStoreByAdmin() throws UserException {
 
         User admin = userService.getCurrentUser();
 
@@ -68,7 +68,7 @@ public class StoreServiceImpl implements StoreService {
             throw new UserException("No store found for this admin");
         }
 
-        return StoreMapper.toDto(store);
+        return store;
     }
 
     // Get Store by Employee
