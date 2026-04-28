@@ -32,10 +32,8 @@ public class AuthServiceImpl implements AuthService {
     private final JwtProvider jwtProvider;
     private final CustomUserImplementation customUserImplementation;
 
-    // =====================================================
     // STORE OWNER SELF REGISTRATION
     // Only STORE_ADMIN can signup here
-    // =====================================================
     @Transactional
     @Override
     public AuthResponse signup(UserDto userDto) throws UserException {
@@ -61,10 +59,8 @@ public class AuthServiceImpl implements AuthService {
         return buildAuthResponse(savedUser, "Store Admin registered successfully...");
     }
 
-    // =====================================================
     // LOGIN FOR ALL ROLES
     // ADMIN / STORE_ADMIN / CASHIER
-    // =====================================================
     @Override
     public AuthResponse login(UserDto userDto) throws UserException {
 
@@ -94,10 +90,8 @@ public class AuthServiceImpl implements AuthService {
         return response;
     }
 
-    // =====================================================
     // STORE ADMIN CREATES CASHIER
     // Call from UserService / Admin Panel
-    // =====================================================
     @Transactional
     public User createCashier(UserDto userDto, Store store) throws UserException {
 
@@ -113,9 +107,7 @@ public class AuthServiceImpl implements AuthService {
         return userRepository.save(cashier);
     }
 
-    // =====================================================
     // COMMON USER CREATION
-    // =====================================================
     private User createUser(UserDto userDto) {
 
         User user = new User();
@@ -136,9 +128,7 @@ public class AuthServiceImpl implements AuthService {
         return userRepository.save(user);
     }
 
-    // =====================================================
     // VALIDATIONS
-    // =====================================================
     private void validateNewUser(UserDto userDto) throws UserException {
 
         if (userDto.getEmail() == null || userDto.getEmail().isBlank()) {
@@ -158,9 +148,7 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
-    // =====================================================
     // SPRING AUTHENTICATION
-    // =====================================================
     private Authentication authenticate(String email, String password)
             throws UserException {
 
@@ -188,9 +176,7 @@ public class AuthServiceImpl implements AuthService {
         );
     }
 
-    // =====================================================
     // JWT RESPONSE
-    // =====================================================
     private AuthResponse buildAuthResponse(User user, String msg) {
 
         UserDetails userDetails =

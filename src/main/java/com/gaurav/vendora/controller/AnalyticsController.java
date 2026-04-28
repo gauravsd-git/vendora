@@ -12,7 +12,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/analytics")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasAnyRole('ADMIN','STORE_ADMIN')")
 public class AnalyticsController {
 
     private final AnalyticsService analyticsService;
