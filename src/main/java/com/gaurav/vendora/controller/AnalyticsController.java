@@ -1,5 +1,6 @@
 package com.gaurav.vendora.controller;
 
+import com.gaurav.vendora.exceptions.UserException;
 import com.gaurav.vendora.service.AnalyticsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,7 +19,7 @@ public class AnalyticsController {
     private final AnalyticsService analyticsService;
 
     @GetMapping("/total-sales")
-    public Map<String, Object> getTotalSales() {
+    public Map<String, Object> getTotalSales() throws UserException {
         Map<String, Object> response = new HashMap<>();
         response.put("totalRevenue", analyticsService.getTotalSales());
         response.put("totalOrders", analyticsService.getTotalOrders());
@@ -26,7 +27,7 @@ public class AnalyticsController {
     }
 
     @GetMapping("/top-products")
-    public List<Object[]> getTopProducts() {
+    public List<Object[]> getTopProducts() throws UserException {
         return analyticsService.getTopProducts();
     }
 }

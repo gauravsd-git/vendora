@@ -1,12 +1,14 @@
 package com.gaurav.vendora.service;
 
+import com.gaurav.vendora.exceptions.UserException;
+
 import java.util.List;
 
 public interface AnalyticsService {
 
-    Double getTotalSales();
+    Double getTotalSales() throws UserException;
 
-    Long getTotalOrders();
+    Long getTotalOrders() throws UserException;
 
-    List<Object[]> getTopProducts();
+    List<Object[]> getTopProducts() throws UserException;
 }

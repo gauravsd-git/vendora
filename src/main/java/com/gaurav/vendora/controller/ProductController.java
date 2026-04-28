@@ -27,7 +27,7 @@ public class ProductController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('STORE_ADMIN','CASHIER')")
+    @PreAuthorize("hasAnyRole('ADMIN','STORE_ADMIN','CASHIER')")
     public ResponseEntity<List<ProductDto>> getAllProducts(
             @RequestHeader("Authorization") String jwt
     ) throws Exception {
