@@ -3,6 +3,7 @@ package com.gaurav.vendora.service.impl;
 import com.gaurav.vendora.configuration.JwtProvider;
 import com.gaurav.vendora.domain.UserRole;
 import com.gaurav.vendora.exceptions.UserException;
+import com.gaurav.vendora.mapper.UserMapper;
 import com.gaurav.vendora.model.User;
 import com.gaurav.vendora.payload.dto.UserDto;
 import com.gaurav.vendora.repository.StoreRepository;
@@ -91,5 +92,42 @@ public class UserServiceImpl implements UserService {
         cashier.setLastLogin(LocalDateTime.now());
 
         return userRepository.save(cashier);
+    }
+
+    @Override
+    public List<UserDto> getCashiersByStore() throws UserException {
+
+        User admin = getCurrentUser();
+
+        return userRepository
+                .findByStoreIdAndRole(
+                        admin.getStore().getId(),
+                        UserRole.CASHIER
+                )
+                .stream()
+                .map(UserMapper::toDTO)
+                .toList();
+    }
+
+    @Override
+    public void deleteCashier(Long id) throws UserException {
+
+        User admin = getCurrentUser();
+
+        User cashier = userRepository.findById(id)
+                .orElseThrow(() ->
+                        new UserException("Cashier not found"));
+
+        if (cashier.getRole() != UserRole.CASHIER) {
+            throw new UserException("User is not cashier");
+        }
+
+        if (!cashier.getStore().getId()
+                .equals(admin.getStore().getId())) {
+
+            throw new UserException("Unauthorized");
+        }
+
+        userRepository.delete(cashier);
     }
 }

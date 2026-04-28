@@ -14,4 +14,8 @@ public interface UserService {
     User getUserById(Long id) throws UserException, Exception;
     User createCashier(UserDto userDto) throws UserException;
     List<User> getAllUsers();
+
+    List<UserDto> getCashiersByStore() throws UserException;
+
+    void deleteCashier(Long id) throws UserException;
 }

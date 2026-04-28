@@ -17,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/store")
+@RequestMapping("/api/stores")
 @PreAuthorize("hasAnyRole('ADMIN','STORE_ADMIN')")
 public class StoreController {
 

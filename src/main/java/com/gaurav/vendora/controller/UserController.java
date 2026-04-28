@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
@@ -21,6 +23,7 @@ public class UserController {
     public ResponseEntity<UserDto> getUserProfile(
             @RequestHeader("Authorization") String jwt
     ) throws UserException {
+
         User user = userService.getUserFromJwtToken(jwt);
         return ResponseEntity.ok(UserMapper.toDTO(user));
     }
@@ -30,6 +33,7 @@ public class UserController {
     public ResponseEntity<UserDto> getUserById(
             @PathVariable Long id
     ) throws Exception {
+
         User user = userService.getUserById(id);
         return ResponseEntity.ok(UserMapper.toDTO(user));
     }
@@ -39,7 +43,28 @@ public class UserController {
     public ResponseEntity<UserDto> createCashier(
             @RequestBody UserDto userDto
     ) throws UserException {
+
         User cashier = userService.createCashier(userDto);
         return ResponseEntity.ok(UserMapper.toDTO(cashier));
+    }
+
+    @GetMapping("/cashiers")
+    @PreAuthorize("hasRole('STORE_ADMIN')")
+    public ResponseEntity<List<UserDto>> getCashiers()
+            throws UserException {
+
+        return ResponseEntity.ok(
+                userService.getCashiersByStore()
+        );
+    }
+
+    @DeleteMapping("/cashier/{id}")
+    @PreAuthorize("hasRole('STORE_ADMIN')")
+    public ResponseEntity<String> deleteCashier(
+            @PathVariable Long id
+    ) throws UserException {
+
+        userService.deleteCashier(id);
+        return ResponseEntity.ok("Cashier deleted");
     }
 }
