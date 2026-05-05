@@ -50,16 +50,27 @@ public class SecurityConfig {
         return new CorsConfigurationSource() {
             @Override
             public @NonNull CorsConfiguration getCorsConfiguration(@NonNull HttpServletRequest request) {
+
                 CorsConfiguration cfg = new CorsConfiguration();
-                cfg.setAllowedOrigins(Arrays.asList(
+
+                 cfg.setAllowedOrigins(Arrays.asList(
                         "http://localhost:5173",
-                        "http://localhost:3000"
+                        "http://localhost:3000",
+                        "https://vendora-glzrto7ua-gauravsd-gits-projects.vercel.app"
                 ));
-                cfg.setAllowedMethods(Collections.singletonList("*"));
+
+                cfg.setAllowedMethods(Arrays.asList(
+                        "GET", "POST", "PUT", "DELETE", "OPTIONS"
+                ));
+
                 cfg.setAllowCredentials(true);
+
                 cfg.setAllowedHeaders(Collections.singletonList("*"));
+
                 cfg.setExposedHeaders(List.of("Authorization"));
+
                 cfg.setMaxAge(3600L);
+
                 return cfg;
             }
         };
