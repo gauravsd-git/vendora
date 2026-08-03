@@ -53,9 +53,10 @@ public class SecurityConfig {
 
                 CorsConfiguration cfg = new CorsConfiguration();
 
-                 cfg.setAllowedOrigins(Arrays.asList(
+                cfg.setAllowedOrigins(Arrays.asList(
                         "http://localhost:5173",
                         "http://localhost:3000",
+                        "https://vendora-ui.vercel.app",
                         "https://vendora-glzrto7ua-gauravsd-gits-projects.vercel.app"
                 ));
 
